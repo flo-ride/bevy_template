@@ -15,11 +15,30 @@ This project serves as a foundation for developing games with Bevy (v0.18.1), co
 
 ### Project Structure
 The `src/` directory is organized into a modular structure:
-- `components/` - ECS Components
-- `systems/` - ECS Systems
-- `plugins/` - Bevy Plugins
-- `ui/` - User Interface logic
-- `main.rs` - Application entry point
+
+```tree
+src/
+├── main.rs
+├── core/
+│ ├── mod.rs
+│ ├── states.rs
+│ ├── events.rs
+│ └── resources.rs
+├── features/
+│ ├── player/
+│ │ ├── mod.rs
+│ │ ├── components.rs
+│ │ ├── systems.rs
+│ │ └── plugin.rs
+│ ├── enemy/
+│ ├── combat/
+│ └── inventory/
+├── ui/
+│ ├── mod.rs
+│ ├── hud.rs
+│ └── menus.rs
+└── plugins.rs
+```
 
 ## Getting Started
 
