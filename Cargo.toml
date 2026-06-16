@@ -6,7 +6,6 @@ edition = "2024"
 [dependencies]
 # Game Engine
 bevy = { version = "0.18.1" }
-bevy_ecs_tilemap = "0.18.1"
 
 # Input Handling
 leafwing-input-manager = "0.20.0"

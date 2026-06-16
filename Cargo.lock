@@ -1061,16 +1061,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bevy_ecs_tilemap"
-version = "0.18.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cf44b72e1afeeab26cd6aed273b84cef5ae93a4410170ea5b0bc18fa1fffdb67"
-dependencies = [
- "bevy",
- "log",
-]
-
-[[package]]
 name = "bevy_egui"
 version = "0.32.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5978,7 +5968,6 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy-inspector-egui",
- "bevy_ecs_tilemap",
  "husky-rs",
  "leafwing-input-manager",
  "rand 0.10.1",
