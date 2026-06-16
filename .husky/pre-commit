@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# Skip hook in CI environment
+if [ -n "$CI" ]; then
+    echo "Running in CI, skipping local pre-commit hook"
+    exit 0
+fi
+
+echo "Running local pre-commit checks..."
+cargo test --quiet
+
+echo "Running tests before commit..."
+cargo test --quiet || {
+    echo "❌ Tests failed! Commit aborted."
+    exit 1
+}
+echo "✓ Tests passed"
+
+echo "Checking code formatting..."
+cargo fmt --check || {
+    echo "❌ Code is not formatted. Run 'cargo fmt' and try again."
+    exit 1
+}
+echo "✓ Code is properly formatted"
+
+echo "Running clippy..."
+cargo clippy --all-targets --all-features -- -D warnings || {
+    echo "❌ Clippy found issues. Please fix them and try again."
+    exit 1
+}
+echo "✓ No clippy warnings"
+
+# Check for common secret patterns
+if git diff --cached | grep -iE "(password|api_key|secret|token|private_key)\s*=\s*[\"'][^\"']+[\"']"; then
+    echo "❌ Potential secret detected in commit!"
+    echo "Please remove sensitive data before committing."
+    exit 1
+fi
+
+# Check for common secret files
+if git diff --cached --name-only | grep -E "\.(pem|key|env)$"; then
+    echo "⚠️  Warning: You're about to commit a file that might contain secrets"
+    echo "Files: $(git diff --cached --name-only | grep -E '\.(pem|key|env)$')"
+    echo "Press Ctrl+C to abort or Enter to continue"
+    read -r confirm
+fi
+
+echo "✓ No obvious secrets detected"
