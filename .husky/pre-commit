@@ -6,6 +6,13 @@ if [ -n "$CI" ]; then
 	exit 0
 fi
 
+echo "Checking code formatting..."
+cargo fmt --check || {
+	echo "❌ Code is not formatted. Run 'cargo fmt' and try again."
+	exit 1
+}
+echo "✓ Code is properly formatted"
+
 # Check for common secret patterns
 if git diff --cached | grep -iE "(password|api_key|secret|token|private_key)\s*=\s*[\"'][^\"']+[\"']"; then
 	echo "❌ Potential secret detected in commit!"
