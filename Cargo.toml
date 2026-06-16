@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 # Game Engine
-bevy = { version = "0.18.1" }
+bevy = { version = "0.18.1", features = ["ui"], default-features = false }
 
 # Input Handling
 leafwing-input-manager = "0.20.0"
@@ -21,6 +21,8 @@ husky-rs = "0.3.3"
 # Features
 [features]
 default = []
+2d = ["bevy/2d"]
+3d = ["bevy/3d"]
 dev = ["dep:bevy-inspector-egui", "bevy/dynamic_linking"]
 
 # Enable a small amount of optimization in the dev profile.
