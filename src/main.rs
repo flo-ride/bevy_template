@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+mod core;
+mod ui;
 
 pub fn main() {
     App::new()
@@ -6,5 +8,6 @@ pub fn main() {
             file_path: "assets".into(),
             ..default()
         }))
+        .add_plugins(ui::MenuPlugin)
         .run();
 }
