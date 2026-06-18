@@ -19,6 +19,11 @@ rand = "0.10.1"
 # Git Hooks
 husky-rs = "0.3.3"
 
+[target.'cfg(all(target_family = "wasm", any(target_os = "unknown", target_os = "none")))'.dependencies]
+getrandom = { version = "0.4", features = ["wasm_js"] }
+getrandom_03 = { version = "0.3", features = ["wasm_js"], package = "getrandom" }
+getrandom_02 = { version = "0.2", features = ["js"], package = "getrandom" }
+
 # Features
 [features]
 default = []
