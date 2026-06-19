@@ -41,6 +41,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Nix Cache
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-linux-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
+          restore-prefixes-first-match: nix-linux-${{ runner.os }}-
+
       - name: Build Linux binary
         run: nix build .#targets
 
@@ -62,6 +68,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Nix Cache
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-windows-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
+          restore-prefixes-first-match: nix-windows-${{ runner.os }}-
+
       - name: Build Windows binary
         run: nix build .#targets
 
@@ -82,6 +94,12 @@ jobs:
     runs-on: nixos-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Nix Cache
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-wasm-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
+          restore-prefixes-first-match: nix-wasm-${{ runner.os }}-
 
       - name: Build WASM binary
         run: nix build .#web
