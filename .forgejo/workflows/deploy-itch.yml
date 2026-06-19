@@ -42,7 +42,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup Nix Cache
-        uses: nix-community/cache-nix-action@v7
+        uses: https://github.com/nix-community/cache-nix-action@v7
         with:
           primary-key: nix-linux-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
           restore-prefixes-first-match: nix-linux-${{ runner.os }}-
@@ -69,7 +69,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup Nix Cache
-        uses: nix-community/cache-nix-action@v7
+        uses: https://github.com/nix-community/cache-nix-action@v7
         with:
           primary-key: nix-windows-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
           restore-prefixes-first-match: nix-windows-${{ runner.os }}-
@@ -96,7 +96,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup Nix Cache
-        uses: nix-community/cache-nix-action@v7
+        uses: https://github.com/nix-community/cache-nix-action@v7
         with:
           primary-key: nix-wasm-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
           restore-prefixes-first-match: nix-wasm-${{ runner.os }}-
