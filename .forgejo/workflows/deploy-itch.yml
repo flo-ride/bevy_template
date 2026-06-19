@@ -18,6 +18,9 @@ jobs:
       channel: ${{ steps.meta.outputs.channel }}
       version: ${{ steps.meta.outputs.version }}
     steps:
+      - name: Install Node.js (for actions)
+        run: nix-env -iA nixpkgs.nodejs
+
       - name: Resolve deployment channel and version
         id: meta
         env:
@@ -39,6 +42,9 @@ jobs:
     needs: configure
     runs-on: nixos-latest
     steps:
+      - name: Install Node.js (for actions)
+        run: nix-env -iA nixpkgs.nodejs
+
       - uses: actions/checkout@v4
 
       - name: Setup Nix Cache
@@ -66,6 +72,9 @@ jobs:
     needs: configure
     runs-on: nixos-latest
     steps:
+      - name: Install Node.js (for actions)
+        run: nix-env -iA nixpkgs.nodejs
+
       - uses: actions/checkout@v4
 
       - name: Setup Nix Cache
@@ -93,6 +102,9 @@ jobs:
     needs: configure
     runs-on: nixos-latest
     steps:
+      - name: Install Node.js (for actions)
+        run: nix-env -iA nixpkgs.nodejs
+
       - uses: actions/checkout@v4
 
       - name: Setup Nix Cache
@@ -121,6 +133,9 @@ jobs:
     needs: [configure, build-linux, build-windows, build-wasm]
     runs-on: nixos-latest
     steps:
+      - name: Install Node.js (for actions)
+        run: nix-env -iA nixpkgs.nodejs
+
       - name: Verify itch.io target
         run: |
           if [[ -z "${ITCH_TARGET}" ]]; then
