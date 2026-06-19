@@ -11,6 +11,7 @@ pub struct MenuPlugin;
 impl Plugin for MenuPlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<GameState>()
+            .init_resource::<UiFont>()
             .add_systems(Update, change_state_from_input)
             .add_systems(OnEnter(GameState::Pause), spawn_pause_overlay)
             .add_systems(OnExit(GameState::Pause), despawn_pause_overlay)
