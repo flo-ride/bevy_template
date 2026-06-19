@@ -14,69 +14,95 @@ env:
 jobs:
   fmt:
     name: Format
-    runs-on: ubuntu-latest
+    runs-on: nixos-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Setup Nix Cache
+        uses: nix-community/cache-nix-action@v7
         with:
-          components: rustfmt
+          primary-key: nix-fmt-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
+          restore-prefixes-first-match: nix-fmt-${{ runner.os }}-
 
       - name: Check formatting
-        run: cargo fmt --all -- --check
+        run: nix develop --command cargo fmt --all -- --check
+
+  lint:
+    name: Lint
+    runs-on: nixos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Nix Cache
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-lint-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
+          restore-prefixes-first-match: nix-lint-${{ runner.os }}-
+
+      - name: Expose devShell PATH for rust-cache
+        run: nix develop --command bash -c 'echo "$PATH"' | tr ':' '\n' >> "$GITHUB_PATH"
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Clippy
+        run: nix develop --command cargo clippy --all-targets --all-features -- -D warnings
+
+  hack:
+    name: Hack
+    runs-on: nixos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Nix Cache
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-hack-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
+          restore-prefixes-first-match: nix-hack-${{ runner.os }}-
+
+      - name: Expose devShell PATH for rust-cache
+        run: nix develop --command bash -c 'echo "$PATH"' | tr ':' '\n' >> "$GITHUB_PATH"
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Cargo Hack
+        run: nix shell nixpkgs#cargo-hack -c nix develop --command cargo hack check --each-feature
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: nixos-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Setup Nix Cache
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-build-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
+          restore-prefixes-first-match: nix-build-${{ runner.os }}-
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            clang \
-            mold \
-            pkg-config \
-            libasound2-dev \
-            libudev-dev \
-            libwayland-dev \
-            libx11-dev \
-            libxcb-render0-dev \
-            libxcb-shape0-dev \
-            libxcb-xfixes0-dev
+      - name: Expose devShell PATH for rust-cache
+        run: nix develop --command bash -c 'echo "$PATH"' | tr ':' '\n' >> "$GITHUB_PATH"
 
       - uses: Swatinem/rust-cache@v2
 
       - name: Build
-        run: cargo build --features 2d
+        run: nix develop --command cargo build --all-targets --all-features
 
   test:
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: nixos-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Setup Nix Cache
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-test-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
+          restore-prefixes-first-match: nix-test-${{ runner.os }}-
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            clang \
-            mold \
-            pkg-config \
-            libasound2-dev \
-            libudev-dev \
-            libwayland-dev \
-            libx11-dev \
-            libxcb-render0-dev \
-            libxcb-shape0-dev \
-            libxcb-xfixes0-dev
+      - name: Expose devShell PATH for rust-cache
+        run: nix develop --command bash -c 'echo "$PATH"' | tr ':' '\n' >> "$GITHUB_PATH"
 
       - uses: Swatinem/rust-cache@v2
 
       - name: Run tests
-        run: cargo test --features 2d
+        run: nix develop --command cargo test --all-targets --all-features
