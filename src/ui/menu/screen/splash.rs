@@ -2,8 +2,9 @@ use bevy::prelude::*;
 
 use crate::core::components::{LoadingScreen, LoadingText};
 use crate::core::states::GameState;
+use crate::ui::UiFont;
 
-pub fn spawn_loading_screen(mut commands: Commands) {
+pub fn spawn_loading_screen(mut commands: Commands, ui_font: Res<UiFont>) {
     commands
         .spawn((
             LoadingScreen,
@@ -25,11 +26,8 @@ pub fn spawn_loading_screen(mut commands: Commands) {
         ))
         .with_children(|parent| {
             parent.spawn((
-                Text::new("Loading"),
-                TextFont {
-                    font_size: 50.0,
-                    ..default()
-                },
+                Text::new("Chargement"),
+                ui_font.text(50.0),
                 TextColor(Color::WHITE),
                 LoadingText,
             ));
@@ -51,13 +49,13 @@ pub fn animate_loading_screen(time: Res<Time>, mut query: Query<&mut Text, With<
     };
 
     for mut text in &mut query {
-        text.0 = format!("Loading{}", dots);
+        text.0 = format!("Chargement {}", dots);
     }
 }
 
-pub fn loading_to_playing(time: Res<Time>, mut next_state: ResMut<NextState<GameState>>) {
-    if time.elapsed_secs() > 5.0 {
-        next_state.set(GameState::Playing);
+pub fn loading_to_starting(time: Res<Time>, mut next_state: ResMut<NextState<GameState>>) {
+    if time.elapsed_secs() > 2.0 {
+        next_state.set(GameState::StartMenu);
     }
 }
 

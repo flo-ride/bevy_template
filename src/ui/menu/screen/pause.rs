@@ -1,8 +1,9 @@
 use bevy::prelude::*;
 
 use crate::core::components::PauseOverlay;
+use crate::ui::UiFont;
 
-pub fn spawn_pause_overlay(mut commands: Commands) {
+pub fn spawn_pause_overlay(mut commands: Commands, ui_font: Res<UiFont>) {
     commands
         .spawn((
             PauseOverlay,
@@ -15,23 +16,17 @@ pub fn spawn_pause_overlay(mut commands: Commands) {
                 flex_direction: FlexDirection::Column,
                 ..default()
             },
-            BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.5)), // gris transparent
+            BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.5)),
         ))
         .with_children(|parent| {
             parent.spawn((
                 Text::new("PAUSE"),
-                TextFont {
-                    font_size: 60.0,
-                    ..default()
-                },
+                ui_font.text(60.0),
                 TextColor(Color::WHITE),
             ));
             parent.spawn((
-                Text::new("Appuyer sur Escape pour relancer"),
-                TextFont {
-                    font_size: 20.0,
-                    ..default()
-                },
+                Text::new("Appuyer sur Échap pour relancer"),
+                ui_font.text(20.0),
                 TextColor(Color::srgb(0.8, 0.8, 0.8)),
             ));
         });
