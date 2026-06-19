@@ -10,6 +10,7 @@ on:
 env:
   BINARY: template
   ITCH_TARGET: ${{ vars.ITCH_TARGET }}
+  NIX_CONFIG: "experimental-features = nix-command flakes"
 
 jobs:
   configure:
