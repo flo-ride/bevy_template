@@ -32,5 +32,4 @@ result
 
 ### Project
 .env
-.husky
 wasm/out
