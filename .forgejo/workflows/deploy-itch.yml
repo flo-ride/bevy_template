@@ -13,7 +13,7 @@ env:
 
 jobs:
   configure:
-    runs-on: ubuntu-latest
+    runs-on: nixos-latest
     outputs:
       channel: ${{ steps.meta.outputs.channel }}
       version: ${{ steps.meta.outputs.version }}
@@ -37,38 +37,17 @@ jobs:
 
   build-linux:
     needs: configure
-    runs-on: ubuntu-latest
+    runs-on: nixos-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: x86_64-unknown-linux-gnu
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            clang \
-            mold \
-            pkg-config \
-            libasound2-dev \
-            libudev-dev \
-            libwayland-dev \
-            libx11-dev \
-            libxcb-render0-dev \
-            libxcb-shape0-dev \
-            libxcb-xfixes0-dev
-
-      - uses: Swatinem/rust-cache@v2
-
       - name: Build Linux binary
-        run: cargo build --release --target x86_64-unknown-linux-gnu --features 2d
+        run: nix build .#targets
 
       - name: Package Linux build
         run: |
           mkdir -p dist/linux
-          cp "target/x86_64-unknown-linux-gnu/release/${BINARY}" dist/linux/
+          cp -L result/x86_64-unknown-linux-gnu/bin/${BINARY} dist/linux/
           cp -r assets dist/linux/ 2>/dev/null || true
 
       - uses: actions/upload-artifact@v4
@@ -77,41 +56,41 @@ jobs:
           path: dist/linux
           retention-days: 1
 
-  build-wasm:
+  build-windows:
     needs: configure
-    runs-on: ubuntu-latest
+    runs-on: nixos-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Build Windows binary
+        run: nix build .#targets
+
+      - name: Package Windows build
+        run: |
+          mkdir -p dist/windows
+          cp -L result/x86_64-pc-windows-msvc/bin/${BINARY}.exe dist/windows/
+          cp -r assets dist/windows/ 2>/dev/null || true
+
+      - uses: actions/upload-artifact@v4
         with:
-          targets: wasm32-unknown-unknown
+          name: windows
+          path: dist/windows
+          retention-days: 1
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-
-      - uses: Swatinem/rust-cache@v2
-
-      - name: Install wasm-bindgen-cli
-        run: |
-          version="$(cargo metadata --format-version 1 | jq -r '.packages[] | select(.name=="wasm-bindgen") | .version')"
-          cargo install wasm-bindgen-cli --force --version "$version"
+  build-wasm:
+    needs: configure
+    runs-on: nixos-latest
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Build WASM binary
-        run: cargo build --profile wasm-release --target wasm32-unknown-unknown --features 2d
+        run: nix build .#web
 
       - name: Package web build
         run: |
           mkdir -p dist/web
-          wasm-bindgen \
-            --no-typescript \
-            --out-name "${BINARY}" \
-            --out-dir dist/web \
-            --target web \
-            "target/wasm32-unknown-unknown/wasm-release/${BINARY}.wasm"
-          cp wasm/index.html wasm/restart-audio-context.js dist/web/
+          cp -Lr result/* dist/web/
+          cp wasm/index.html wasm/restart-audio-context.js dist/web/ 2>/dev/null || true
           cp -r assets dist/web/ 2>/dev/null || true
 
       - uses: actions/upload-artifact@v4
@@ -121,8 +100,8 @@ jobs:
           retention-days: 1
 
   deploy:
-    needs: [configure, build-linux, build-wasm]
-    runs-on: ubuntu-latest
+    needs: [configure, build-linux, build-windows, build-wasm]
+    runs-on: nixos-latest
     steps:
       - name: Verify itch.io target
         run: |
@@ -135,27 +114,26 @@ jobs:
         with:
           path: dist
 
-      - name: Install butler
-        run: |
-          curl -fsSL -o butler.zip "https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default"
-          unzip butler.zip
-          chmod +x butler
-          ./butler -V
-
       - name: Push builds to itch.io
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
           CHANNEL: ${{ needs.configure.outputs.channel }}
           VERSION: ${{ needs.configure.outputs.version }}
         run: |
-          ./butler push \
+          nix run nixpkgs#butler -- push \
             --fix-permissions \
             --userversion="$VERSION" \
             dist/web \
             "${ITCH_TARGET}:${CHANNEL}"
 
-          ./butler push \
+          nix run nixpkgs#butler -- push \
             --fix-permissions \
             --userversion="$VERSION" \
             dist/linux \
             "${ITCH_TARGET}:${CHANNEL}-linux"
+
+          nix run nixpkgs#butler -- push \
+            --fix-permissions \
+            --userversion="$VERSION" \
+            dist/windows \
+            "${ITCH_TARGET}:${CHANNEL}-windows"
