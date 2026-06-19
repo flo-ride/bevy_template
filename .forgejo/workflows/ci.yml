@@ -16,6 +16,9 @@ jobs:
     name: Format
     runs-on: nixos-latest
     steps:
+      - name: Install Node.js (for actions)
+        run: nix-env -iA nixpkgs.nodejs
+
       - uses: actions/checkout@v4
 
       - name: Setup Nix Cache
@@ -31,6 +34,9 @@ jobs:
     name: Lint
     runs-on: nixos-latest
     steps:
+      - name: Install Node.js (for actions)
+        run: nix-env -iA nixpkgs.nodejs
+
       - uses: actions/checkout@v4
 
       - name: Setup Nix Cache
@@ -51,6 +57,9 @@ jobs:
     name: Hack
     runs-on: nixos-latest
     steps:
+      - name: Install Node.js (for actions)
+        run: nix-env -iA nixpkgs.nodejs
+
       - uses: actions/checkout@v4
 
       - name: Setup Nix Cache
@@ -71,6 +80,9 @@ jobs:
     name: Build
     runs-on: nixos-latest
     steps:
+      - name: Install Node.js (for actions)
+        run: nix-env -iA nixpkgs.nodejs
+
       - uses: actions/checkout@v4
 
       - name: Setup Nix Cache
@@ -91,6 +103,9 @@ jobs:
     name: Test
     runs-on: nixos-latest
     steps:
+      - name: Install Node.js (for actions)
+        run: nix-env -iA nixpkgs.nodejs
+
       - uses: actions/checkout@v4
 
       - name: Setup Nix Cache
