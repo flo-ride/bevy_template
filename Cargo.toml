@@ -5,7 +5,11 @@ edition = "2024"
 
 [dependencies]
 # Game Engine
-bevy = { version = "0.18.1", features = ["ui"], default-features = false }
+bevy = { version = "0.18.1", features = ["ui", "asset_processor"], default-features = false }
+bevy_asset_loader = { version = "0.26.0", features = ["2d"] }
+bevy_common_assets = { version = "0.16.0", features = ["json"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 
 # Input Handling
 leafwing-input-manager = "0.20.0"

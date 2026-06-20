@@ -19,6 +19,8 @@ pub fn main() {
                 }),
         )
         .add_systems(Startup, setup_camera)
+        // Handle the translation of the UI
+        .add_plugins(ui::LocalePlugin)
         .add_plugins(ui::MenuPlugin)
         .run();
 }

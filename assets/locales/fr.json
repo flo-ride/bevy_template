@@ -1,0 +1,12 @@
+{
+  "translations": {
+    "pause.title": "PAUSE",
+    "pause.hint": "Appuyer sur Echap pour relancer",
+    "start.play": "Jouer",
+    "start.volume": "Volume",
+    "start.settings": "Paramètres",
+    "start.credits": "Crédits",
+    "start.quit": "Quitter",
+    "start.footer": "Echap en jeu pour faire pause"
+  }
+}

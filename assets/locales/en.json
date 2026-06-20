@@ -1,0 +1,12 @@
+{
+  "translations": {
+    "pause.title": "PAUSE",
+    "pause.hint": "Press ESC to resume",
+    "start.play": "Play",
+    "start.volume": "Volume",
+    "start.settings": "Settings",
+    "start.credits": "Credits",
+    "start.quit": "Quit",
+    "start.footer": "Echap for pause"
+  }
+}

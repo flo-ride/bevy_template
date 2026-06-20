@@ -1,9 +1,15 @@
 use bevy::prelude::*;
 
 use crate::core::components::PauseOverlay;
+use crate::core::ressources::{Locale, Translation};
 use crate::ui::UiFont;
 
-pub fn spawn_pause_overlay(mut commands: Commands, ui_font: Res<UiFont>) {
+pub fn spawn_pause_overlay(
+    mut commands: Commands,
+    ui_font: Res<UiFont>,
+    locale: Res<Locale>,
+    translations: Res<Assets<Translation>>,
+) {
     commands
         .spawn((
             PauseOverlay,
@@ -20,12 +26,12 @@ pub fn spawn_pause_overlay(mut commands: Commands, ui_font: Res<UiFont>) {
         ))
         .with_children(|parent| {
             parent.spawn((
-                Text::new("PAUSE"),
+                Text::new(locale.get_translation(&translations, "pause.title")),
                 ui_font.text(60.0),
                 TextColor(Color::WHITE),
             ));
             parent.spawn((
-                Text::new("Appuyer sur Échap pour relancer"),
+                Text::new(locale.get_translation(&translations, "pause.hint")),
                 ui_font.text(20.0),
                 TextColor(Color::srgb(0.8, 0.8, 0.8)),
             ));

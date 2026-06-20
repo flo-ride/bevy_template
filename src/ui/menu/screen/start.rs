@@ -14,7 +14,12 @@ const BTN_SECONDARY_HOVER: Color = Color::srgba(0.22, 0.26, 0.42, 0.95);
 const TEXT_PRIMARY: Color = Color::srgb(0.96, 0.97, 1.0);
 const TEXT_MUTED: Color = Color::srgb(0.68, 0.72, 0.82);
 
-pub fn spawn_start_screen(mut commands: Commands, ui_font: Res<UiFont>) {
+pub fn spawn_start_screen(
+    mut commands: Commands,
+    ui_font: Res<UiFont>,
+    locale: Res<crate::core::ressources::Locale>,
+    translations: Res<Assets<crate::core::ressources::Translation>>,
+) {
     commands
         .spawn((
             StartScreen,
@@ -33,8 +38,8 @@ pub fn spawn_start_screen(mut commands: Commands, ui_font: Res<UiFont>) {
         ))
         .with_children(|root| {
             spawn_title(root, &ui_font);
-            spawn_button_column(root, &ui_font);
-            spawn_footer(root, &ui_font);
+            spawn_button_column(root, &ui_font, &locale, &translations);
+            spawn_footer(root, &ui_font, &locale, &translations);
         });
 }
 
@@ -59,7 +64,7 @@ fn spawn_title(parent: &mut ChildSpawnerCommands, ui_font: &UiFont) {
                 TextColor(Color::srgb(0.98, 0.99, 1.0)),
             ));
             title.spawn((
-                Text::new("Aventure spatiale"),
+                Text::new("NotSeriousGame"),
                 ui_font.text(22.0),
                 TextColor(TEXT_MUTED),
                 Node {
@@ -70,7 +75,12 @@ fn spawn_title(parent: &mut ChildSpawnerCommands, ui_font: &UiFont) {
         });
 }
 
-fn spawn_button_column(parent: &mut ChildSpawnerCommands, ui_font: &UiFont) {
+fn spawn_button_column(
+    parent: &mut ChildSpawnerCommands,
+    ui_font: &UiFont,
+    locale: &crate::core::ressources::Locale,
+    translations: &Assets<crate::core::ressources::Translation>,
+) {
     parent
         .spawn(Node {
             flex_direction: FlexDirection::Column,
@@ -79,17 +89,36 @@ fn spawn_button_column(parent: &mut ChildSpawnerCommands, ui_font: &UiFont) {
             ..default()
         })
         .with_children(|column| {
-            spawn_action_button(column, "Jouer", true, ui_font);
-            spawn_action_button(column, "Volume", false, ui_font);
-            spawn_action_button(column, "Paramètres", false, ui_font);
-            spawn_action_button(column, "Crédits", false, ui_font);
-            spawn_action_button(column, "Quitter", false, ui_font);
+            spawn_action_button(column, "start.play", true, ui_font, locale, translations);
+            spawn_action_button(column, "start.volume", false, ui_font, locale, translations);
+            spawn_action_button(
+                column,
+                "start.settings",
+                false,
+                ui_font,
+                locale,
+                translations,
+            );
+            spawn_action_button(
+                column,
+                "start.credits",
+                false,
+                ui_font,
+                locale,
+                translations,
+            );
+            spawn_action_button(column, "start.quit", false, ui_font, locale, translations);
         });
 }
 
-fn spawn_footer(parent: &mut ChildSpawnerCommands, ui_font: &UiFont) {
+fn spawn_footer(
+    parent: &mut ChildSpawnerCommands,
+    ui_font: &UiFont,
+    locale: &crate::core::ressources::Locale,
+    translations: &Assets<crate::core::ressources::Translation>,
+) {
     parent.spawn((
-        Text::new("v0.1.0 — Échap en jeu pour la pause"),
+        Text::new(locale.get_translation(translations, "start.footer")),
         ui_font.text(14.0),
         TextColor(Color::srgba(0.55, 0.58, 0.68, 0.9)),
         Node {
@@ -102,9 +131,11 @@ fn spawn_footer(parent: &mut ChildSpawnerCommands, ui_font: &UiFont) {
 
 fn spawn_action_button(
     parent: &mut ChildSpawnerCommands,
-    label: &str,
+    key: &str,
     primary: bool,
     ui_font: &UiFont,
+    locale: &crate::core::ressources::Locale,
+    translations: &Assets<crate::core::ressources::Translation>,
 ) {
     let color = if primary { BTN_PRIMARY } else { BTN_SECONDARY };
 
@@ -124,7 +155,7 @@ fn spawn_action_button(
         ))
         .with_children(|btn| {
             btn.spawn((
-                Text::new(label),
+                Text::new(locale.get_translation(translations, key)),
                 ui_font.text(22.0),
                 TextColor(TEXT_PRIMARY),
             ));
