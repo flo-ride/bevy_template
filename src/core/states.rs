@@ -11,3 +11,17 @@ pub enum GameState {
     GameOver,
     Victory,
 }
+
+impl GameState {
+    pub fn initial() -> Self {
+        #[cfg(feature = "dev")]
+        {
+            GameState::Playing
+        }
+
+        #[cfg(not(feature = "dev"))]
+        {
+            GameState::Loading
+        }
+    }
+}
