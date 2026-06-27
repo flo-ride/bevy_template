@@ -8,3 +8,6 @@ pub struct ScoreLabel;
 
 #[derive(Component)]
 pub struct HealthLabel;
+
+#[derive(Component)]
+pub struct InventoryElement;

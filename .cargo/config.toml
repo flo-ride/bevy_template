@@ -9,3 +9,6 @@ linker = "rust-lld.exe"
 
 [target.wasm32-unknown-unknown]
 runner = "wasm-server-runner"
+
+[env]
+WINIT_X11_SCALE_FACTOR = "1"
