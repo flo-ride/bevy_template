@@ -13,6 +13,10 @@ pub fn main() {
                 .set(WindowPlugin {
                     primary_window: Some(Window {
                         title: "Template".into(),
+                        name: Some("template.app".into()),
+                        // Tells wasm not to override default event handling, like F5, Ctrl+R etc.
+                        prevent_default_event_handling: false,
+                        window_theme: Some(bevy::window::WindowTheme::Dark),
                         ..default()
                     }),
                     ..default()
