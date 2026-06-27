@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 mod core;
+mod features;
 mod ui;
 
 pub fn main() {
@@ -19,7 +20,7 @@ pub fn main() {
                 }),
         )
         .add_systems(Startup, setup_camera)
-        .add_plugins(ui::MenuPlugin)
+        .add_plugins((ui::MenuPlugin, features::hud::HudPlugin))
         .run();
 }
 
