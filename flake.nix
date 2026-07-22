@@ -72,6 +72,12 @@
             ]);
         };
 
+        extraScript = ''
+          if [ -n "''${BF_WASM_BINDGEN:-}" ]; then
+            export PATH="$BF_WASM_BINDGEN/bin:$PATH"
+          fi
+        '';
+
         rustToolchain = targets: let
           baseToolchain =
             if builtins.pathExists ./rust-toolchain.toml
