@@ -62,7 +62,7 @@ jobs:
 
       - name: Build wasm package
         run: |
-          wasm-bindgen \
+          nix develop --command wasm-bindgen \
             --target web \
             --out-dir web/ \
             target/wasm32-unknown-unknown/release/template.wasm
@@ -72,7 +72,6 @@ jobs:
           mkdir -p web
           cp wasm/* web/
           cd web/
-          zip -r ../template.zip .
 
       - name: Install butler
         run: |
@@ -85,5 +84,5 @@ jobs:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
         run: |
           ./butler push \
-            template.zip \
+            web \
             mrvym/draft-gmtk-2026:web
