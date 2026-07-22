@@ -1,0 +1,41 @@
+name: Deploy to itch.io
+
+name: Deploy itch.io
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Nix Cache
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-fmt-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
+          restore-prefixes-first-match: nix-fmt-${{ runner.os }}-
+
+      - name: Install butler
+        run: |
+          curl -L -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+
+      - name: Push itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          ./butler push \
+            target/release/template \
+            mrvym/draft-gmtk-2026:linux
