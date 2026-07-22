@@ -15,15 +15,17 @@ env:
 jobs:
   fmt:
     name: Format
-    runs-on: nixos-latest
+    runs-on: ubuntu-latest
     steps:
-      - name: Install Node.js (for actions)
-        run: nix-env -iA nixpkgs.nodejs
+      - uses: actions/checkout@v7
 
-      - uses: actions/checkout@v4
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Nix Cache
-        uses: https://github.com/nix-community/cache-nix-action@v7
+        uses: nix-community/cache-nix-action@v7
         with:
           primary-key: nix-fmt-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
           restore-prefixes-first-match: nix-fmt-${{ runner.os }}-
@@ -33,15 +35,17 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: nixos-latest
+    runs-on: ubuntu-latest
     steps:
-      - name: Install Node.js (for actions)
-        run: nix-env -iA nixpkgs.nodejs
+      - uses: actions/checkout@v7
 
-      - uses: actions/checkout@v4
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Nix Cache
-        uses: https://github.com/nix-community/cache-nix-action@v7
+        uses: nix-community/cache-nix-action@v7
         with:
           primary-key: nix-lint-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
           restore-prefixes-first-match: nix-lint-${{ runner.os }}-
@@ -49,22 +53,24 @@ jobs:
       - name: Expose devShell PATH for rust-cache
         run: nix develop --command bash -c 'echo "$PATH"' | tr ':' '\n' >> "$GITHUB_PATH"
 
-      - uses: https://github.com/Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@v2
 
       - name: Clippy
         run: nix develop --command cargo clippy --all-targets --all-features -- -D warnings
 
   hack:
     name: Hack
-    runs-on: nixos-latest
+    runs-on: ubuntu-latest
     steps:
-      - name: Install Node.js (for actions)
-        run: nix-env -iA nixpkgs.nodejs
+      - uses: actions/checkout@v7
 
-      - uses: actions/checkout@v4
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Nix Cache
-        uses: https://github.com/nix-community/cache-nix-action@v7
+        uses: nix-community/cache-nix-action@v7
         with:
           primary-key: nix-hack-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
           restore-prefixes-first-match: nix-hack-${{ runner.os }}-
@@ -72,22 +78,24 @@ jobs:
       - name: Expose devShell PATH for rust-cache
         run: nix develop --command bash -c 'echo "$PATH"' | tr ':' '\n' >> "$GITHUB_PATH"
 
-      - uses: https://github.com/Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@v2
 
       - name: Cargo Hack
         run: nix shell nixpkgs#cargo-hack -c nix develop --command cargo hack check --each-feature
 
   build:
     name: Build
-    runs-on: nixos-latest
+    runs-on: ubuntu-latest
     steps:
-      - name: Install Node.js (for actions)
-        run: nix-env -iA nixpkgs.nodejs
+      - uses: actions/checkout@v7
 
-      - uses: actions/checkout@v4
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Nix Cache
-        uses: https://github.com/nix-community/cache-nix-action@v7
+        uses: nix-community/cache-nix-action@v7
         with:
           primary-key: nix-build-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
           restore-prefixes-first-match: nix-build-${{ runner.os }}-
@@ -95,22 +103,24 @@ jobs:
       - name: Expose devShell PATH for rust-cache
         run: nix develop --command bash -c 'echo "$PATH"' | tr ':' '\n' >> "$GITHUB_PATH"
 
-      - uses: https://github.com/Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@v2
 
       - name: Build
         run: nix develop --command cargo build --all-targets --all-features
 
   test:
     name: Test
-    runs-on: nixos-latest
+    runs-on: ubuntu-latest
     steps:
-      - name: Install Node.js (for actions)
-        run: nix-env -iA nixpkgs.nodejs
+      - uses: actions/checkout@v7
 
-      - uses: actions/checkout@v4
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Nix Cache
-        uses: https://github.com/nix-community/cache-nix-action@v7
+        uses: nix-community/cache-nix-action@v7
         with:
           primary-key: nix-test-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
           restore-prefixes-first-match: nix-test-${{ runner.os }}-
@@ -118,7 +128,7 @@ jobs:
       - name: Expose devShell PATH for rust-cache
         run: nix develop --command bash -c 'echo "$PATH"' | tr ':' '\n' >> "$GITHUB_PATH"
 
-      - uses: https://github.com/Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@v2
 
       - name: Run tests
         run: nix develop --command cargo test --all-targets --all-features
