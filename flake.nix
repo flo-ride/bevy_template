@@ -35,6 +35,7 @@
             packages.rust-toolchain.develop
             packages.dioxus-cli.develop
             packages.bevy-cli.develop
+            pkgs.wasm-bindgen-cli
             pkgs.mold
             pkgs.clang
             pkgs.pkg-config
@@ -92,9 +93,9 @@
             (final: prev: {
               wasm-bindgen-cli = prev.rustPlatform.buildRustPackage rec {
                 pname = "wasm-bindgen-cli";
-                version = "0.2.121";
-                hash = "sha256-ZOMgFNOcGkO66Jz/Z83eoIu+DIzo3Z/vq6Z5g6BDY/w=";
-                cargoHash = "sha256-DPdCDPTAPBrbqLUqnCwQu1dePs9lGg85JCJOCIr9qjU=";
+                version = "0.2.125";
+                hash = "sha256-zRawtjxMOdTMX+mZaiNR3YYfTiZJhf9qj7kXSSeMxrc=";
+                cargoHash = "sha256-aZCfgR23Qb0Pn4Mm4ToMtuuRQqSJjXCR9li/VvP5CTM=";
                 src = prev.fetchCrate {
                   inherit pname version hash;
                 };
