@@ -59,6 +59,12 @@
             ]);
         };
 
+        extraScript = ''
+          if [ -n "''${BF_WASM_BINDGEN:-}" ]; then
+            export PATH="$BF_WASM_BINDGEN/bin:$PATH"
+          fi
+        '';
+
         rustToolchain = targets: let
           baseToolchain =
             if builtins.pathExists ./rust-toolchain.toml
@@ -80,9 +86,9 @@
             (final: prev: {
               wasm-bindgen-cli = prev.rustPlatform.buildRustPackage rec {
                 pname = "wasm-bindgen-cli";
-                version = "0.2.121";
-                hash = "sha256-ZOMgFNOcGkO66Jz/Z83eoIu+DIzo3Z/vq6Z5g6BDY/w=";
-                cargoHash = "sha256-DPdCDPTAPBrbqLUqnCwQu1dePs9lGg85JCJOCIr9qjU=";
+                version = "0.2.125";
+                hash = "sha256-zRawtjxMOdTMX+mZaiNR3YYfTiZJhf9qj7kXSSeMxrc=";
+                cargoHash = "sha256-aZCfgR23Qb0Pn4Mm4ToMtuuRQqSJjXCR9li/VvP5CTM=";
                 src = prev.fetchCrate {
                   inherit pname version hash;
                 };
