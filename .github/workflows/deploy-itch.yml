@@ -1,7 +1,5 @@
 name: Deploy to itch.io
 
-name: Deploy itch.io
-
 on:
   push:
     tags:
