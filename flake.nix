@@ -35,6 +35,8 @@
             packages.rust-toolchain.develop
             packages.dioxus-cli.develop
             packages.bevy-cli.develop
+            pkgs.mold
+            pkgs.clang
           ];
           shellHook = ''
             export PATH="$HOME/.cargo/bin:$PATH"
