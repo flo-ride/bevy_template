@@ -35,6 +35,18 @@
             packages.rust-toolchain.develop
             packages.dioxus-cli.develop
             packages.bevy-cli.develop
+            pkgs.mold
+            pkgs.clang
+            pkgs.pkg-config
+            pkgs.udev
+            pkgs.alsa-lib
+            pkgs.vulkan-loader
+            pkgs.libx11
+            pkgs.libxcursor
+            pkgs.libxi
+            pkgs.libxrandr
+            pkgs.libxkbcommon
+            pkgs.wayland
           ];
           shellHook = ''
             export PATH="$HOME/.cargo/bin:$PATH"
