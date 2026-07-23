@@ -6,8 +6,8 @@ pub struct UiFont(pub Handle<Font>);
 impl UiFont {
     pub fn text(&self, size: f32) -> TextFont {
         TextFont {
-            font: self.0.clone(),
-            font_size: size,
+            font: bevy::prelude::FontSource::Handle(self.0.clone()),
+            font_size: bevy::prelude::FontSize::Px(size),
             ..default()
         }
     }
