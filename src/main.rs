@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 mod core;
+mod features;
 mod ui;
+
+use features::personna::plugin::PersonnaPlugin;
 
 pub fn main() {
     App::new()
@@ -23,7 +26,7 @@ pub fn main() {
                 }),
         )
         .add_systems(Startup, setup_camera)
-        .add_plugins(ui::MenuPlugin)
+        .add_plugins((ui::MenuPlugin, PersonnaPlugin))
         .run();
 }
 

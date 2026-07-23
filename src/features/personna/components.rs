@@ -1,0 +1,29 @@
+use bevy::prelude::*;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize, Reflect)]
+pub struct RaceProfile {
+    pub tolerance: f32,
+    pub mood_bias: f32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Reflect)]
+pub struct Preference {
+    pub recipe: String,
+    pub tolerance_bonus: f32,
+    pub add_effect: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Reflect)]
+pub struct Persona {
+    pub race: String,
+    pub greetings: Vec<String>,
+    pub preferences: Vec<Preference>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Asset, TypePath)]
+pub struct PersonnaConfig {
+    pub races: Vec<String>,
+    pub race_profiles: std::collections::HashMap<String, RaceProfile>,
+    pub personas: std::collections::HashMap<String, Persona>,
+}
