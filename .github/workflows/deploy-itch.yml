@@ -2,172 +2,87 @@ name: Deploy to itch.io
 
 on:
   push:
-    branches:
-      - master
     tags:
       - "v*"
 
-env:
-  BINARY: template
-  ITCH_TARGET: ${{ vars.ITCH_TARGET }}
-  NIX_CONFIG: "experimental-features = nix-command flakes"
-
 jobs:
-  configure:
-    runs-on: nixos-latest
-    outputs:
-      channel: ${{ steps.meta.outputs.channel }}
-      version: ${{ steps.meta.outputs.version }}
-    steps:
-      - name: Install Node.js (for actions)
-        run: nix-env -iA nixpkgs.nodejs
-
-      - name: Resolve deployment channel and version
-        id: meta
-        env:
-          REF: ${{ github.ref }}
-          SHA: ${{ github.sha }}
-        run: |
-          if [[ "$REF" == "refs/heads/master" ]]; then
-            echo "channel=dev" >> "$GITHUB_OUTPUT"
-            echo "version=dev-${SHA:0:7}" >> "$GITHUB_OUTPUT"
-          elif [[ "$REF" == refs/tags/v* ]]; then
-            echo "channel=stable" >> "$GITHUB_OUTPUT"
-            echo "version=${REF#refs/tags/}" >> "$GITHUB_OUTPUT"
-          else
-            echo "Unsupported ref: $REF" >&2
-            exit 1
-          fi
-
   build-linux:
-    needs: configure
-    runs-on: nixos-latest
-    steps:
-      - name: Install Node.js (for actions)
-        run: nix-env -iA nixpkgs.nodejs
+    runs-on: ubuntu-latest
 
-      - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Nix Cache
-        uses: https://github.com/nix-community/cache-nix-action@v7
+        uses: nix-community/cache-nix-action@v7
         with:
-          primary-key: nix-linux-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
-          restore-prefixes-first-match: nix-linux-${{ runner.os }}-
+          primary-key: nix-fmt-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
+          restore-prefixes-first-match: nix-fmt-${{ runner.os }}-
+          
+      - name: Building the linux target 
+        run: nix develop --command cargo build --release 
 
-      - name: Build Linux binary
-        run: nix build .#targets
-
-      - name: Package Linux build
+      - name: Install butler
         run: |
-          mkdir -p dist/linux
-          cp -L result/x86_64-unknown-linux-gnu/bin/${BINARY} dist/linux/
-          cp -r assets dist/linux/ 2>/dev/null || true
+          curl -L -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: linux
-          path: dist/linux
-          retention-days: 1
-
-  build-windows:
-    needs: configure
-    runs-on: nixos-latest
-    steps:
-      - name: Install Node.js (for actions)
-        run: nix-env -iA nixpkgs.nodejs
-
-      - uses: actions/checkout@v4
-
-      - name: Setup Nix Cache
-        uses: https://github.com/nix-community/cache-nix-action@v7
-        with:
-          primary-key: nix-windows-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
-          restore-prefixes-first-match: nix-windows-${{ runner.os }}-
-
-      - name: Build Windows binary
-        run: nix build .#targets
-
-      - name: Package Windows build
-        run: |
-          mkdir -p dist/windows
-          cp -L result/x86_64-pc-windows-msvc/bin/${BINARY}.exe dist/windows/
-          cp -r assets dist/windows/ 2>/dev/null || true
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: windows
-          path: dist/windows
-          retention-days: 1
-
-  build-wasm:
-    needs: configure
-    runs-on: nixos-latest
-    steps:
-      - name: Install Node.js (for actions)
-        run: nix-env -iA nixpkgs.nodejs
-
-      - uses: actions/checkout@v4
-
-      - name: Setup Nix Cache
-        uses: https://github.com/nix-community/cache-nix-action@v7
-        with:
-          primary-key: nix-wasm-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
-          restore-prefixes-first-match: nix-wasm-${{ runner.os }}-
-
-      - name: Build WASM binary
-        run: nix build .#web
-
-      - name: Package web build
-        run: |
-          mkdir -p dist/web
-          cp -Lr result/* dist/web/
-          cp wasm/index.html wasm/restart-audio-context.js dist/web/ 2>/dev/null || true
-          cp -r assets dist/web/ 2>/dev/null || true
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: web
-          path: dist/web
-          retention-days: 1
-
-  deploy:
-    needs: [configure, build-linux, build-windows, build-wasm]
-    runs-on: nixos-latest
-    steps:
-      - name: Install Node.js (for actions)
-        run: nix-env -iA nixpkgs.nodejs
-
-      - name: Verify itch.io target
-        run: |
-          if [[ -z "${ITCH_TARGET}" ]]; then
-            echo "Set the ITCH_TARGET repository variable to <username>/<game>." >&2
-            exit 1
-          fi
-
-      - uses: actions/download-artifact@v4
-        with:
-          path: dist
-
-      - name: Push builds to itch.io
+      - name: Push itch.io
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
-          CHANNEL: ${{ needs.configure.outputs.channel }}
-          VERSION: ${{ needs.configure.outputs.version }}
         run: |
-          nix run nixpkgs#butler -- push \
-            --fix-permissions \
-            --userversion="$VERSION" \
-            dist/web \
-            "${ITCH_TARGET}:${CHANNEL}"
+          ./butler push \
+            target/release/template \
+            mrvym/draft-gmtk-2026:linux
 
-          nix run nixpkgs#butler -- push \
-            --fix-permissions \
-            --userversion="$VERSION" \
-            dist/linux \
-            "${ITCH_TARGET}:${CHANNEL}-linux"
+  build-web:
+    runs-on: ubuntu-latest
 
-          nix run nixpkgs#butler -- push \
-            --fix-permissions \
-            --userversion="$VERSION" \
-            dist/windows \
-            "${ITCH_TARGET}:${CHANNEL}-windows"
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Nix Cache
+        uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-fmt-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/Cargo.lock') }}
+          restore-prefixes-first-match: nix-fmt-${{ runner.os }}-
+          
+      - name: Building the wasm target 
+        run: nix develop --command cargo build --release --target wasm32-unknown-unknown
+
+      - name: Build wasm package
+        run: |
+          nix develop --command wasm-bindgen \
+            --target web \
+            --out-dir web/ \
+            target/wasm32-unknown-unknown/release/template.wasm
+
+      - name: Prepare itch.io package
+        run: |
+          mkdir -p web
+          cp wasm/* web/
+          cd web/
+
+      - name: Install butler
+        run: |
+          curl -L -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+
+      - name: Push itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          ./butler push \
+            web \
+            mrvym/draft-gmtk-2026:web

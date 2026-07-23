@@ -35,6 +35,7 @@
             packages.rust-toolchain.develop
             packages.dioxus-cli.develop
             packages.bevy-cli.develop
+            pkgs.wasm-bindgen-cli
             pkgs.mold
             pkgs.clang
             pkgs.pkg-config
