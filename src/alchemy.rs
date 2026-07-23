@@ -15,12 +15,13 @@ pub struct LiquidContainer {
     pub doses: usize,
     pub max_doses: usize,
     pub color: Color,
+    #[allow(dead_code)]
     pub is_glass: bool, // Just to distinguish behavior if needed
 }
-
 #[derive(Component)]
 pub struct LiquidVisual {
     pub container_height: f32,
+    #[allow(dead_code)]
     pub max_width: f32,
 }
 

@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::core::components::PlayingHud;
 use crate::ui::UiFont;
 
-pub fn spawn_playing_hud(mut commands: Commands, ui_font: Res<UiFont>) {
+pub fn spawn_playing_hud(mut commands: Commands, _ui_font: Res<UiFont>) {
     commands.spawn((
         PlayingHud,
         Node {

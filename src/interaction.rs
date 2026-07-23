@@ -38,10 +38,10 @@ fn update_cursor_pos(
         return;
     };
 
-    if let Some(pos) = window.cursor_position() {
-        if let Ok(world_pos) = camera.viewport_to_world_2d(camera_transform, pos) {
-            cursor_pos.0 = world_pos;
-        }
+    if let Some(pos) = window.cursor_position()
+        && let Ok(world_pos) = camera.viewport_to_world_2d(camera_transform, pos)
+    {
+        cursor_pos.0 = world_pos;
     }
 }
 
