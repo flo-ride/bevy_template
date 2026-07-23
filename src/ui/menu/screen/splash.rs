@@ -26,7 +26,7 @@ pub fn spawn_loading_screen(mut commands: Commands, ui_font: Res<UiFont>) {
         ))
         .with_children(|parent| {
             parent.spawn((
-                Text::new("Chargement"),
+                Text::new("Loading"),
                 ui_font.text(50.0),
                 TextColor(Color::WHITE),
                 LoadingText,
@@ -49,7 +49,7 @@ pub fn animate_loading_screen(time: Res<Time>, mut query: Query<&mut Text, With<
     };
 
     for mut text in &mut query {
-        text.0 = format!("Chargement {}", dots);
+        text.0 = format!("Loading {}", dots);
     }
 }
 
