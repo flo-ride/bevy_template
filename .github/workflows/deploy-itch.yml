@@ -71,6 +71,7 @@ jobs:
         run: |
           mkdir -p web
           cp wasm/* web/
+          cp assets web/ -r
           cd web/
 
       - name: Install butler
