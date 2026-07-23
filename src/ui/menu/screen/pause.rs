@@ -25,7 +25,7 @@ pub fn spawn_pause_overlay(mut commands: Commands, ui_font: Res<UiFont>) {
                 TextColor(Color::WHITE),
             ));
             parent.spawn((
-                Text::new("Appuyer sur Échap pour relancer"),
+                Text::new("Press Echap for resume"),
                 ui_font.text(20.0),
                 TextColor(Color::srgb(0.8, 0.8, 0.8)),
             ));

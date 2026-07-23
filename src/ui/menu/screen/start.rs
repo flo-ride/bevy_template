@@ -60,7 +60,7 @@ fn spawn_title(parent: &mut ChildSpawnerCommands, ui_font: &UiFont) {
                 TextColor(Color::srgb(0.95, 0.85, 0.65)),
             ));
             title.spawn((
-                Text::new("Une aventure de comptoir"),
+                Text::new("// TODO:"),
                 ui_font.text(22.0),
                 TextColor(TEXT_MUTED),
                 Node {
@@ -80,17 +80,18 @@ fn spawn_button_column(parent: &mut ChildSpawnerCommands, ui_font: &UiFont) {
             ..default()
         })
         .with_children(|column| {
-            spawn_action_button(column, "Jouer", true, ui_font);
+            spawn_action_button(column, "Play", true, ui_font);
             spawn_action_button(column, "Volume", false, ui_font);
-            spawn_action_button(column, "Paramètres", false, ui_font);
-            spawn_action_button(column, "Crédits", false, ui_font);
-            spawn_action_button(column, "Quitter", false, ui_font);
+            spawn_action_button(column, "Settings", false, ui_font);
+            spawn_action_button(column, "Credits", false, ui_font);
         });
 }
 
 fn spawn_disclaimer(parent: &mut ChildSpawnerCommands, ui_font: &UiFont) {
     parent.spawn((
-        Text::new("Certains assets sont faits avec l'IA mais c'est temporaire, ils ne servent qu'au développement."),
+        Text::new(
+            "Some assets are made with AI but it's temporary, they are only used for development.",
+        ),
         ui_font.text(14.0),
         TextColor(Color::srgba(0.8, 0.4, 0.4, 0.9)),
         Node {
@@ -103,7 +104,7 @@ fn spawn_disclaimer(parent: &mut ChildSpawnerCommands, ui_font: &UiFont) {
 
 fn spawn_footer(parent: &mut ChildSpawnerCommands, ui_font: &UiFont) {
     parent.spawn((
-        Text::new("v0.1.0 — Échap en jeu pour la pause"),
+        Text::new("v0.1.0 — Echap for pause"),
         ui_font.text(14.0),
         TextColor(Color::srgba(0.55, 0.58, 0.68, 0.9)),
         Node {
