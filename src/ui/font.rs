@@ -16,6 +16,6 @@ impl UiFont {
 impl FromWorld for UiFont {
     fn from_world(world: &mut World) -> Self {
         let asset_server = world.resource::<AssetServer>();
-        Self(asset_server.load("fonts/NotoSans-Regular.ttf"))
+        Self(asset_server.load("fonts/MedievalSharp-Regular.ttf"))
     }
 }
