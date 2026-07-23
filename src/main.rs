@@ -1,7 +1,12 @@
 use bevy::prelude::*;
+mod alchemy;
 mod core;
+mod environment;
 mod features;
+mod interaction;
+mod physics;
 mod ui;
+mod views;
 
 use features::personna::plugin::PersonnaPlugin;
 
@@ -25,11 +30,18 @@ pub fn main() {
                     ..default()
                 }),
         )
+        .add_plugins(core::states::StatePlugin)
+        .add_plugins(physics::PhysicsPlugin)
+        .add_plugins(interaction::InteractionPlugin)
+        .add_plugins(alchemy::AlchemyPlugin)
         .add_systems(Startup, setup_camera)
-        .add_plugins((ui::MenuPlugin, PersonnaPlugin))
+        .add_plugins(PersonnaPlugin)
+        .add_plugins(ui::MenuPlugin)
+        .add_plugins(views::ViewsPlugin)
+        .add_plugins(environment::EnvironmentPlugin)
         .run();
 }
 
 fn setup_camera(mut commands: Commands) {
-    commands.spawn(Camera2d);
+    commands.spawn((Camera2d, core::components::MainCamera));
 }
