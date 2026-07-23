@@ -9,7 +9,7 @@ pub struct EnvironmentPlugin;
 
 impl Plugin for EnvironmentPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::Playing), setup_environment);
+        app.add_systems(Startup, setup_environment);
     }
 }
 
