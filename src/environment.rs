@@ -3,6 +3,7 @@ use crate::core::states::GameState;
 use crate::interaction::Draggable;
 use avian2d::prelude::*;
 use bevy::prelude::*;
+use bevy_aseprite_ultra::prelude::*;
 
 pub struct EnvironmentPlugin;
 
@@ -50,16 +51,20 @@ fn setup_environment(
     ));
 
     // A Glass on the counter
-    let glass_entity = commands
+    let bottle_entity = commands
         .spawn((
-            Sprite {
-                image: asset_server.load("textures/glasses.png"),
-                custom_size: Some(Vec2::new(100.0, 150.0)),
+            AseAnimation {
+                aseprite: asset_server.load("textures/Bottle Glouglou.aseprite"),
+                animation: Animation::default(),
+            },
+            Transform {
+                translation: Vec3::new(0.0, -150.0, 2.0),
+                scale: Vec3::splat(3.0),
                 ..default()
             },
-            Transform::from_translation(Vec3::new(0.0, -150.0, 2.0)),
+            Sprite::default(),
             RigidBody::Dynamic,
-            LockedAxes::ROTATION_LOCKED, // Empêche le verre de tomber sur le côté !
+            LockedAxes::ROTATION_LOCKED,
             Collider::rectangle(100.0, 150.0),
             Draggable,
             LiquidContainer {
@@ -82,7 +87,7 @@ fn setup_environment(
             },
         ))
         .id();
-    commands.entity(glass_entity).add_child(glass_liquid);
+    commands.entity(bottle_entity).add_child(glass_liquid);
 
     // ==========================================
     // === ALCHEMY VIEW (X = 5000.0) ===

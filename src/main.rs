@@ -8,6 +8,7 @@ mod physics;
 mod ui;
 mod views;
 
+use bevy_aseprite_ultra::AsepriteUltraPlugin;
 use features::personna::plugin::PersonnaPlugin;
 
 pub fn main() {
@@ -40,6 +41,7 @@ pub fn main() {
         .add_plugins(ui::MenuPlugin)
         .add_plugins(views::ViewsPlugin)
         .add_plugins(environment::EnvironmentPlugin)
+        .add_plugins(AsepriteUltraPlugin)
         .run();
 }
 
