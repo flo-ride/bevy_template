@@ -7,12 +7,12 @@ use crate::ui::UiFont;
 const BUTTON_WIDTH: Val = Val::Px(300.0);
 const BUTTON_HEIGHT: Val = Val::Px(54.0);
 
-const BTN_PRIMARY: Color = Color::srgb(0.92, 0.38, 0.22);
-const BTN_PRIMARY_HOVER: Color = Color::srgb(1.0, 0.48, 0.32);
-const BTN_SECONDARY: Color = Color::srgba(0.14, 0.16, 0.28, 0.88);
-const BTN_SECONDARY_HOVER: Color = Color::srgba(0.22, 0.26, 0.42, 0.95);
-const TEXT_PRIMARY: Color = Color::srgb(0.96, 0.97, 1.0);
-const TEXT_MUTED: Color = Color::srgb(0.68, 0.72, 0.82);
+const BTN_PRIMARY: Color = Color::srgb(0.55, 0.27, 0.07); // Brown (SaddleBrown)
+const BTN_PRIMARY_HOVER: Color = Color::srgb(0.70, 0.35, 0.10);
+const BTN_SECONDARY: Color = Color::srgba(0.20, 0.15, 0.10, 0.90); // Darker wood/stone
+const BTN_SECONDARY_HOVER: Color = Color::srgba(0.30, 0.22, 0.15, 0.95);
+const TEXT_PRIMARY: Color = Color::srgb(0.95, 0.85, 0.65); // Warm parchment-like
+const TEXT_MUTED: Color = Color::srgb(0.60, 0.50, 0.40);
 
 pub fn spawn_start_screen(mut commands: Commands, ui_font: Res<UiFont>) {
     commands
@@ -54,12 +54,12 @@ fn spawn_title(parent: &mut ChildSpawnerCommands, ui_font: &UiFont) {
         })
         .with_children(|title| {
             title.spawn((
-                Text::new("TEMPLATE"),
+                Text::new("THE THIRSTY SKELETON"),
                 ui_font.text(72.0),
-                TextColor(Color::srgb(0.98, 0.99, 1.0)),
+                TextColor(Color::srgb(0.95, 0.85, 0.65)),
             ));
             title.spawn((
-                Text::new("Aventure spatiale"),
+                Text::new("Une aventure de comptoir"),
                 ui_font.text(22.0),
                 TextColor(TEXT_MUTED),
                 Node {
