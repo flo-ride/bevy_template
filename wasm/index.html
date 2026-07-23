@@ -22,21 +22,24 @@
     </style>
   </head>
   <body>
-    <script type="module">
-      import "./restart-audio-context.js";
 
-      // File generate by wasm-bindgen with the name of the project
-      import init from "./template.js"; 
+    <canvas id="bevy-game-canvas" width="1920" height="1080">
+        <script type="module">
+            import "./restart-audio-context.js";
 
-      init().catch((error) => {
-        if (
-          !error.message.startsWith(
-            "Using exceptions for control flow, don't mind me. This isn't actually an error!",
-          )
-        ) {
-          throw error;
-        }
-      });
-    </script>
+            // File generate by wasm-bindgen with the name of the project
+            import init from "./template.js"; 
+
+            init().catch((error) => {
+                if (
+                !error.message.startsWith(
+                    "Using exceptions for control flow, don't mind me. This isn't actually an error!",
+                )
+                ) {
+                throw error;
+                }
+            });
+        </script>
+    </canvas>
   </body>
 </html>
