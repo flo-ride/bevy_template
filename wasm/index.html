@@ -23,16 +23,13 @@
     </style>
   </head>
   <body>
+    <script type="module">
+        import "./restart-audio-context.js";
 
-    <canvas id="bevy-game-canvas">
-        <script type="module">
-            import "./restart-audio-context.js";
+        // File generate by wasm-bindgen with the name of the project
+        import init from "./template.js"; 
 
-            // File generate by wasm-bindgen with the name of the project
-            import init from "./template.js"; 
-
-            init()
-        </script>
-    </canvas>
+        init()
+    </script>
   </body>
 </html>
