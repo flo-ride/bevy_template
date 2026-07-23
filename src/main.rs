@@ -20,8 +20,11 @@ pub fn main() {
                 })
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        canvas: Some("#bevy-game-canvas".into()),
+                        resolution: (1280, 720).into(),
                         title: "Template".into(),
+                        // Tells Wasm to resize the window according to the available canvas
+                        fit_canvas_to_parent: true,
+
                         name: Some("template.app".into()),
                         // Tells wasm not to override default event handling, like F5, Ctrl+R etc.
                         prevent_default_event_handling: false,
