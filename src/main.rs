@@ -12,6 +12,7 @@ pub fn main() {
                 })
                 .set(WindowPlugin {
                     primary_window: Some(Window {
+                        canvas: Some("#bevy-game-canvas".into()),
                         title: "Template".into(),
                         name: Some("template.app".into()),
                         // Tells wasm not to override default event handling, like F5, Ctrl+R etc.
